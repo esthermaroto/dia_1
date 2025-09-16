@@ -1,3 +1,14 @@
+<?php
+if (isSet ($_POST["username"])) {
+    $nombre = $_POST["username"];
+    $password = $_POST["password"];
+}
+else {
+    echo $error=1;
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,9 +18,10 @@
 </head>
 <body>
     <h1>Hola Mundo</h1>
-    <a href="?section=noticias">Noticias</a>
-    <a href="?section=galería">Galería</a>
-    <a href="?section=contacto">Contacto</a>
+    <a href="?section=news">Noticias</a>
+    <a href="?section=photos">Galería</a>
+    <a href="?section=contact">Contacto</a>
+
     <br>
 
     <?php
@@ -17,18 +29,20 @@
         $section = $_GET["section"];
         echo "Has seleccionado la sección: " . $section . "<br>";
     
-    switch ($section) {
-        case 'noticias':
-            echo "Aquí están las noticias más recientes.<br>";
-            break;
-        case 'galería':
-            echo '<img src="foto.png" alt="Mi imagen" width="200"><br>';
-            break;
-        case 'contacto':
-            echo "Correo: esther.maroto@gmail.com<br>";
-            break;
+        switch ($section) {
+            case 'news':
+                echo "Aquí están las noticias más recientes.<br>";
+                break;
+            case 'photos':
+                echo '<img src="foto.png" alt="Mi imagen" width="200"><br>';
+                break;
+            case 'contact':
+                echo "Correo: esther.maroto@gmail.com<br>";
+                break;
+                
+        }
     }
-}
+
 
 
     $var = "hola";
@@ -67,7 +81,35 @@
     echo '<img src="foto.png" alt="Mi imagen" width="200">';
 
     ?>
+    <form action="" method="POST">
+            <input type="text" name="username" placeholder="Nombre de usuario" />
+            <br>
+            <input type="password" name="password" placeholder="Contraseña" />
+            <input type="submit" value="Enviar" />
+    </form>
     <br>
+    
+    <?php
+    $login = false;
+    if (isset($_POST["username"])) {
+        if ($nombre == "admin") {
+            $login = true;          
+        }
+    }
+    if (isset($_POST["password"])) {
+        if ($password != "admin") {
+            $login = false;          
+        }
+    }
+    if ($login) {
+        echo "Hola admin <br>";
+    }
+    else {
+        if (isSet($error)) {
+            echo "Regístrate <br>";
+        }
+    }
+    ?>
     
 
 </body>
