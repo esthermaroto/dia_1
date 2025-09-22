@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <?php
+    foreach ($movies as $movie) {
+        if ($movie->getId() == $_GET['id']) {
+            echo "<h2>" . $movie->getTitle() . "</h2>";
+            echo "<p><strong>Director:</strong> " . $movie->getAuthor() . "</p>";
+            echo "<p><strong>Año:</strong> " . $movie->getYear() . "</p>";
+            echo "<p><strong>Descripción:</strong> " . $movie->getDescription() . "</p>";
+            echo "<img src='posters/" . $movie->getPoster() . "' alt='" . $movie->getTitle() . " Poster' style='width:200px;'><br>";
+            echo "<br><a href='index.php'>Volver a la lista de películas</a>";
+        }
+    }
+?>
+</body>
+</html>
