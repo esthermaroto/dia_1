@@ -58,7 +58,6 @@ $movies[]= new Movie("Inception","Christopher Nolan",2010,"Un ladrón que tiene 
                     echo "<p><strong>Director:</strong> " . $movie->getAuthor() . "</p>";
                     echo "<p><strong>Año:</strong> " . $movie->getYear() . "</p>";
                     echo "<p><strong>Descripción:</strong> " . $movie->getDescription() . "</p>";
-                    echo "<br><a href='index.php'>Volver a la lista de películas</a>";
                 }
             }
     }
@@ -67,4 +66,3 @@ $movies[]= new Movie("Inception","Christopher Nolan",2010,"Un ladrón que tiene 
     ?>
 </body>
 </html>
-
