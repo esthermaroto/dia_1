@@ -42,7 +42,7 @@ $login = 0;
 if(isset($_POST['login'])){
     if(!empty($_POST['user']) && !empty($_POST['password'])){
         if(isset($users[$_POST['user']]) ){
-            if($_POST['password'] == $users[$_POST['user']]->getPassword()){
+            if($_POST['password'] == $_POST['user']->getPassword()){
             $_SESSION['login']=1;
             $_SESSION['user']=$users[$_POST['user']];
         } else {
@@ -71,7 +71,7 @@ if(isset($_POST['login'])){
     ?>
     <h1> login </h1>
     
-    <form action="index.php" method="POST">
+    <form action="loginObject.php" method="POST">
             <input type="text" name="user" placeholder="nombre de usuario" />
             <input type="password" name="password" placeholder="contraseña" />
             <input type="submit" name= "login" value="entrar" />
@@ -85,8 +85,8 @@ if(isset($_POST['login'])){
 
     }
     }else {
-        echo "<h1>Bienvenido</h1> hola " . $_SESSION['user']->getUser();
-        echo "<br><a href='index.php?logout=1'>Cerrar sesión</a>";
+        echo "<h1>Bienvenido</h1> hola " . $_SESSION['user'];
+        echo "<br><a href='loginObject.php?logout=1'>Cerrar sesión</a>";
     }
     ?>
 
