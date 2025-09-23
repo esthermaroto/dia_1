@@ -4,34 +4,55 @@
 
 session_start();
 
+class User{
+
+    private $username;
+    private $password;
+
+    public function __construct($username, $password){
+        $this->username = $username;
+        $this->password = $password;
+    }
+
+    public function getUsername(){
+        return $this->username;
+    }
+
+    public function getPassword(){
+        return $this->password;
+    }
+
+
+}
+
 if(isset($_GET['logout'])){
-    session_destroy();
+    $_SESSION['login']=false;
 }
 
 if(!isset($_SESSION['login'])){
-    $_SESSION['login']=0;
+    $_SESSION['login']=false;
 }
 
 
-$users["admin"]= "admin";
-$users['pepe']="pepe";
-$users['juan']="juan";
+$users["pepe"]= new User("pepe","pepe");
+$users["maria"]= new User("maria","maria");
+$users["juan"]= new User("juan","juan");
+$users["nami"]= new User("nami","nami");
 
 $error = 0;
-$login = 0;
 
 if(isset($_POST['login'])){
     if(!empty($_POST['user']) && !empty($_POST['password'])){
         if(isset($users[$_POST['user']]) ){
-            if($_POST['password'] == $users[$_POST['user']]){
+            if($_POST['password'] == $users[$_POST['user']]->getPassword()){
             $_SESSION['login']=1;
-            $_SESSION['user']=$_POST['user'];
-        } else {
-            $error="Error: Invalid username or password.";
+            $_SESSION['user']=$users[$_POST['user']];
+            } 
+            else $error="contraseña incorrecta";
         }
-    } else {
-        $error="Error: Please fill in all fields.";
+        else $error="usuario desconocido";
     }
+    else $error="no hay user o pass";
 }
 
 
@@ -46,13 +67,13 @@ if(isset($_POST['login'])){
 </head>
 <body>
     <?php
-}
+
     if (!$_SESSION['login']) {
        
     ?>
     <h1> login </h1>
     
-    <form action="index.php" method="POST">
+    <form action="login.php" method="POST">
             <input type="text" name="user" placeholder="nombre de usuario" />
             <input type="password" name="password" placeholder="contraseña" />
             <input type="submit" name= "login" value="entrar" />
@@ -61,13 +82,13 @@ if(isset($_POST['login'])){
     <br>
     <?php
     
-    if($error) {
-        echo "ERROR: " . $error;    
-
+        if($error) {
+            echo "ERROR: " . $error;    
+        }
     }
-    }else {
-        echo "<h1>Bienvenido</h1> hola " . $_SESSION['user'];
-        echo "<br><a href='index.php?logout=1'>Cerrar sesión</a>";
+    else {
+        echo "<br><a href='login.php?logout=1'>Cerrar sesión</a>";
+        echo "<h1>Bienvenido</h1> hola " . $_SESSION['user']->getUsername();
     }
     ?>
 
