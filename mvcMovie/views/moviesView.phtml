@@ -7,6 +7,7 @@
 </head>
 <body>
     <?php
+    /*
     foreach ($movies as $movie) {
         if ($movie->getId() == $_GET['id']) {
             echo "<h2>" . $movie->getTitle() . "</h2>";
@@ -17,6 +18,26 @@
             echo "<br><a href='index.php'>Volver a la lista de películas</a>";
         }
     }
+    */
+
+    if($info){
+        echo "<script>alert('" .$info. "');</script>";
+    }
+    else{
+        foreach($movies as $movie){
+            if($movie->getId() == $_GET['id']){
+                echo "<h1>" .$movie->getTitle(). "</h1>";
+                echo "<p>" .$movie->getAuthor(). "</p>";
+                echo "<p>" .$movie->getYear(). "</p>";
+                echo "<p>" .$movie->getDescription(). "</p>";
+                echo "<img src='posters/" .$movie->getPoster(). "' alt='" .$movie->getTitle(). " Poster' style='width:200px;'><br>";
+                echo "<br><a href='index.php'>Volver a la lista de películas</a>";
+            }
+        }
+    }
+    
+
+    
 ?>
 </body>
 </html>
