@@ -1,4 +1,5 @@
 <?php
+$db = Connection::connect();
 
 if(isset($_GET['id'])){
     $info=false;

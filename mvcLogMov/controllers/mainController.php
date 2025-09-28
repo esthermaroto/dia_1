@@ -10,7 +10,7 @@ require_once('models/Movie.php');
 
 session_start();
 
-$db = Connection::connect();
+
 
 
 
@@ -19,7 +19,7 @@ if(isset($_GET['c'])){
 }
 else{
     if(!($_SESSION['user'])){
-        require_once('controllers/userController.php');
+        require_once('controllers/registerController.php');
     }
     else{
         require_once('controllers/movieController.php');
