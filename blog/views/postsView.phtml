@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <?php
+        if(!$post){
+            echo "<script>alert('Post no encontrado');</script>";
+        }
+        else{
+            echo "<h1>" . $post->getTitle() . "</h1>"; 
+            echo "<p>" . $post->getDateTime() . "</p>";
+            echo "<p>" . $post->getText() . "</p>";
+            echo "<p>" . $post->getAuthor() . "</p>";
+            echo "<br><a href='index.php'>Volver a la lista de posts</a>";
+        }
+    ?>
+</body>
+</html>

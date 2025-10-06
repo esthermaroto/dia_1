@@ -29,5 +29,17 @@ class MovieRepository{
         header('Location: index.php');
         exit;
     }
+
+    // Inserta la película en la base de datos
+    public static function addMovie($title, $author, $year, $description, $poster){
+        $db = Connection::connect();
+        $q = "INSERT INTO peliculas (title, author, year, description, poster) VALUES ('$title', '$author', '$year', '$description', '$poster')";
+       if($result = $db->query($q)) {
+        return $db->insert_id;
+       } else {
+        return false;
+       }
+
+    }
 }
 

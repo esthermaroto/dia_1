@@ -1,0 +1,54 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Blog</h1>
+        <?php if ($_SESSION['user']): ?>           
+
+            <a href="index.php?c=blog&action=new">Añadir</a>
+            <br><a href='index.php?c=register&logout=1'>Cerrar sesión</a>
+        <?php endif; ?>
+    
+</body>
+</html>
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+</head>
+<body>
+    <h1>Blog</h1>
+    <?php if ($_SESSION['user']): ?>           
+        <a href="index.php?c=blog&action=new">Añadir</a>
+        <br><a href='index.php?c=register&logout=1'>Cerrar sesión</a>
+    <?php endif; ?>
+
+    <hr>
+
+    <?php if (isset($posts) && is_array($posts) && count($posts) > 0): ?>
+        <?php foreach($posts as $post): ?>
+            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+                <h2><?= htmlspecialchars($post->getTitle()) ?></h2>
+                <p><?= nl2br(htmlspecialchars($post->getText())) ?></p>
+                <small>
+                    Autor: <?= htmlspecialchars($post->getAuthor()) ?> |
+                    Fecha: <?= htmlspecialchars($post->getDatetime()) ?>
+                </small>
+                <br>
+                <?php if ($_SESSION['user']): ?>
+                    <a href="index.php?c=blog&action=delete&id=<?= $post->getId() ?>" onclick="return confirm('¿Seguro que quieres borrar este post?');">Borrar</a>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No hay posts para mostrar.</p>
+    <?php endif; ?>
+</body>
+</html>

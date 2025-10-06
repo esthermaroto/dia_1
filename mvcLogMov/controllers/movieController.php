@@ -1,6 +1,7 @@
 <?php
 $db = Connection::connect();
 require_once('models/MovieRepository.php');
+require_once('helpers/fileHelper.php');
 
 
 
@@ -17,20 +18,16 @@ if (isset($_POST['title']) && isset($_POST['author']) && isset($_POST['year']) &
     $year = $_POST['year'];
     $description = $_POST['description'];
     $poster = '';
+    $filename = $_SESSION['user']->getId().$_FILES['poster']['name'];
+
 
     // Manejar subida de imagen
-    if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
-        $poster = $_SESSION['user']->getId().$_FILES['poster']['name'];
-        move_uploaded_file($_FILES['poster']['tmp_name'], 'posters/img/'.$_SESSION['user']->getId().$_FILES['poster']['name']);
+    if(!FileHelper::fileHandler($_FILES['poster']['tmp_name'], 'posters/img/'.$filename)){
+        $filename='';
     }
 
-    // Inserta la película en la base de datos
-    $q = "INSERT INTO peliculas (title, author, year, description, poster) VALUES ('$title', '$author', '$year', '$description', '$poster')";
-    $db->query($q);
-
-    // Redirige a la lista principal
-    header('Location: index.php');
-    exit;
+    if(MovieRepository::addMovie($title, $author, $year, $description, $filename)){
+    }    
 }
 
 if (isset($_GET['action']) && $_GET['action'] === 'new') {
