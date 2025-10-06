@@ -5,14 +5,15 @@
 // cargar vista
 
 //--------NACHO--------
+
 require_once('models/User.php');
 require_once('models/Movie.php');
 
 session_start();
 
-
-
-
+if (!isset($_SESSION['user'])) {
+    $_SESSION['user'] = false;
+}
 
 if(isset($_GET['c'])){
     require_once('controllers/'.$_GET['c'].'Controller.php');
@@ -25,8 +26,6 @@ else{
         require_once('controllers/movieController.php');
     }
 }
-
-
 
     
 

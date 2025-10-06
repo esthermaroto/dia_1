@@ -1,6 +1,7 @@
 <?php
-
 $db = Connection::connect();
+require_once('models/User.php');
+require_once('models/UserRepository.php');
 
 //logout
 if(isset($_GET['logout'])){
@@ -14,39 +15,15 @@ if(!isset($_SESSION['user'])){
 
 //login
 if (isset($_POST['username']) && isset($_POST['password']) && !isset($_POST['register'])) {
-    $username = $_POST['username'];
-    $password = md5($_POST['password']);
-    $q = 'SELECT * FROM users WHERE username="'.$username.'" AND password="'.$password.'"';
-    $result = $db->query($q);
-
-    if ($row = $result->fetch_assoc()) {
-        $_SESSION['user'] = new User($row['id'], $row['username']);
-        header('Location: index.php');
-        exit;
-    } else {
-        $message = "❌ Usuario o contraseña incorrectos.";
-    }
+    $user = UserRepository::logUser($username, $password);
 }
 
 //registro
 if(isset($_POST['register'])){
-    if(!empty($_POST['username']) && !empty($_POST['password'])){
-        $q='SELECT * FROM users WHERE username="'.$_POST['username'].'"';
-        $result = $db->query($q);
-        if($row = $result->fetch_assoc()){
-            $message = "❌ Ese usuario ya existe.";
-            
-        }
-        else{
-                $q = 'INSERT INTO users (username, password) VALUES("'.$_POST['username'].'","'.md5($_POST['password']).'")';            if($db->query($q)){
-                $id= $db->insert_id;
-                $_SESSION['user'] = new User($id,$_POST['username']);
-                require_once 'views/userView.phtml';
-                exit;
-            }
-        }
-    }
-
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $user = UserRepository::registerUser($username, $password);
+    exit;
 }
 
 //vista registro

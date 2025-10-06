@@ -2,27 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Películas</title>
 </head>
 <body>
     <h1>Películas</h1>
-    <?php
+    <?php foreach($movies as $movie): ?>
+        <a href="index.php?c=movie&id=<?= $movie->getId() ?>"><?= htmlspecialchars($movie->getTitle()) ?></a>
+        <?php if ($_SESSION['user']): ?>
+            <a href="index.php?c=movie&action=delete&id=<?= $movie->getId() ?>" onclick="return confirm('¿Seguro que quieres borrar esta película?');">Borrar</a>
+        <?php endif; ?>
+        <br>
+    <?php endforeach; ?>
 
-    foreach($movies as $movie){
-        echo "<a href='index.php?c=movie&id=".$movie->getId()."'>" . $movie->getTitle() . "</a><br>";
-    }
-
-    if (!$_SESSION['user']) {  
-     if($error) {
-            echo "ERROR: " . $error;    
-        }
-    }
-    else {
-        echo "<br><a href='index.php?c=register&logout=1'>Cerrar sesión</a>";
-    }
-
-
-    ?>
+    <?php if ($_SESSION['user']): ?>
+        <a href="index.php?c=movie&action=new">Añadir</a>
+        <br><a href='index.php?c=register&logout=1'>Cerrar sesión</a>
+    <?php endif; ?>
 </body>
 </html>
