@@ -40,17 +40,4 @@ class ComentRepository{
         }
         return null;
     }
-
-    //obtener todos los comentarios de un autor de la base de datos
-    public static function getComentByAuthor($idAuthor){
-        $db = Connection::connect();
-        $q = "SELECT * FROM coments WHERE author=" . intval($idAuthor);
-        $result = $db->query($q);
-        $coments = array();
-        while($row = $result->fetch_assoc()){
-            $coments[] = new Coment($row['content'], $row['author'], $row['post'], $row['id']);
-        }
-        return $coments;
-
-}
 }

@@ -12,8 +12,14 @@
     ?>
     <hr>
         <p>Escrito por: <?php echo $post->getAuthor(); ?> | Fecha: <?php echo $post->getDateTime() ?></p>
-
     <hr>
+    <h4>Añadir un comentario</h4>
+        <form action="index.php?c=blog&action=coment&id=<?= htmlspecialchars($_GET['id']) ?>" method="POST">
+            <label for="content">Comentario:</label><br>
+            <textarea id="content" name="content" placeholder="Escribe tu comentario aquí..." rows="4" cols="50" required></textarea><br><br>
+            <input type="submit" value="Enviar Comentario">
+        </form>
+        <hr>
     <h3>Comentarios</h3>     
     <?php if ($_SESSION['user']): ?>        
     <?php if (isset($coments) && count($coments) > 0): ?>
@@ -31,17 +37,7 @@
         <p>No hay comentarios todavía. ¡Sé el primero en comentar!</p>
     <?php endif; ?>
     <?php endif; ?> 
-
-    <?php if ($_SESSION['user']): ?>
         <hr>
-        <h4>Añadir un comentario</h4>
-        <form action="index.php?c=blog&action=coment&id=<?= htmlspecialchars($_GET['id']) ?>" method="POST">
-            <label for="content">Comentario:</label><br>
-            <textarea id="content" name="content" placeholder="Escribe tu comentario aquí..." rows="4" cols="50" required></textarea><br><br>
-            <input type="submit" value="Enviar Comentario">
-        </form>
-    <?php endif; ?>
-
     <br>
         <a href='index.php'>Volver a la lista de posts</a> 
 

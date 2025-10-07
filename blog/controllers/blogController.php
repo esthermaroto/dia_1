@@ -5,12 +5,6 @@ require_once('models/Coment.php');
 require_once('models/ComentRepository.php');
 
 // Mostrar formulario para nuevo post
-if (isset($_GET['action']) && $_GET['action'] === 'new'&& isset($_GET['coment'])) {
-    require_once 'views/comentView.phtml';
-    exit;
-}
-
-// Mostrar formulario para nuevo post
 if (isset($_GET['action']) && $_GET['action'] === 'new') {
     require_once 'views/newPostView.phtml';
     exit;
@@ -45,7 +39,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'coment' && isset($_POST['cont
 //Borrar comentario
 if (isset($_GET['action']) && $_GET['action'] === 'deleteComent' && isset($_GET['id'])) {
     if (!$_SESSION['user']) {
-        header('Location: index.php'); // Si no hay usuario, fuera
+        header('Location: index.php');
         exit;
     }
     $idComent = $_GET['id'];
