@@ -5,10 +5,11 @@ class Coment{
     private $post;
     private $id;
 
-    public function __construct($content, $author, $post){
+    public function __construct($content, $author, $post, $id = null){
         $this->content = $content;
         $this->author = $author;
         $this->post = $post;
+        $this->id = $id;
     }
 
     public function getContent(){

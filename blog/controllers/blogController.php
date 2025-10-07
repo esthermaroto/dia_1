@@ -32,19 +32,38 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     exit;
 }
 
-//Mostrar post
 //Crear comentario
-if (isset($_POST['content'])) {
+if (isset($_GET['action']) && $_GET['action'] === 'coment' && isset($_POST['content']) && isset($_GET['id'])) {
     $content = $_POST['content'];
     $author = $_SESSION['user']->getId();
-    $coment = ComentRepository::createComent($content, $author, $_GET['id']);
-    header('Location: index.php?c=blog');
+    $postId = $_GET['id'];
+    ComentRepository::createComent($content, $author, $postId);
+    header('Location: index.php?c=blog&id=' . $postId);
+    exit;
+}
+
+//Borrar comentario
+if (isset($_GET['action']) && $_GET['action'] === 'deleteComent' && isset($_GET['id'])) {
+    if (!$_SESSION['user']) {
+        header('Location: index.php'); // Si no hay usuario, fuera
+        exit;
+    }
+    $idComent = $_GET['id'];
+    $coment = ComentRepository::getComentByID($idComent);
+
+    // Solo borra si el comentario existe y el autor es el usuario actual
+    if ($coment && $coment->getAuthor() == $_SESSION['user']->getId()) {
+        ComentRepository::deleteComent($idComent);
+    }
+    // Redirigir de vuelta al post
+    header('Location: index.php?c=blog&id=' . $coment->getPost());
     exit;
 }
 
 if(isset($_GET['id'])){
     $post = PostRepository::getPostByID($_GET['id']);
-    require_once 'views/postView.phtml';
+    $coments = ComentRepository::getComentByPost($_GET['id']);
+    require_once 'views/showPost.phtml';
     exit;
 }
 

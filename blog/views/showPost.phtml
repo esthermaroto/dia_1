@@ -6,9 +6,44 @@
     <title>Post</title>
 </head>
 <body>
-    <?php
-    
+    <?php  
+        echo "<h1>" .$post->getTitle(). "</h1>";
+        echo "<p>" .nl2br(htmlspecialchars($post->getText())). "</p>";
     ?>
-    
+    <hr>
+        <p>Escrito por: <?php echo $post->getAuthor(); ?> | Fecha: <?php echo $post->getDateTime() ?></p>
+
+    <hr>
+    <h3>Comentarios</h3>     
+    <?php if ($_SESSION['user']): ?>        
+    <?php if (isset($coments) && count($coments) > 0): ?>
+        <?php foreach ($coments as $coment): ?>
+            <div style="border: 1px solid #eee; padding: 10px; margin-bottom: 10px;">
+                <p><?= nl2br(htmlspecialchars($coment->getContent())) ?></p>
+                <small>Autor: <?= htmlspecialchars($coment->getAuthor()) ?></small>
+                <?php if ($_SESSION['user'] && $_SESSION['user']->getId() == $coment->getAuthor()): ?>
+                    <br>
+                    <a href="index.php?c=blog&action=deleteComent&id=<?= $coment->getId() ?>" onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?');" style="color:red; font-size: 0.8em;">Borrar</a>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No hay comentarios todavía. ¡Sé el primero en comentar!</p>
+    <?php endif; ?>
+    <?php endif; ?> 
+
+    <?php if ($_SESSION['user']): ?>
+        <hr>
+        <h4>Añadir un comentario</h4>
+        <form action="index.php?c=blog&action=coment&id=<?= htmlspecialchars($_GET['id']) ?>" method="POST">
+            <label for="content">Comentario:</label><br>
+            <textarea id="content" name="content" placeholder="Escribe tu comentario aquí..." rows="4" cols="50" required></textarea><br><br>
+            <input type="submit" value="Enviar Comentario">
+        </form>
+    <?php endif; ?>
+
+    <br>
+        <a href='index.php'>Volver a la lista de posts</a> 
+
 </body>
 </html>

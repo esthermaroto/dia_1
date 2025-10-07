@@ -27,8 +27,6 @@
                     <a href="index.php?c=blog&action=delete&id=<?= $post->getId() ?>" onclick="return confirm('¿Seguro que quieres borrar este post?');">Borrar</a>
                     <br>
                     <a href="index.php?c=blog&id=<?= $post->getId() ?>">Ver</a>
-                    <br>
-                    <a href="index.php?c=blog&action=new&coment&id=<?= $post->getId() ?>">Comentar</a>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
