@@ -38,8 +38,7 @@
                 <h2><?= htmlspecialchars($post->getTitle()) ?></h2>
                 <p><?= nl2br(htmlspecialchars($post->getText())) ?></p>
                 <small>
-                    Autor: <?= htmlspecialchars($post->getAuthor()) ?> |
-                    Fecha: <?= htmlspecialchars($post->getDatetime()) ?>
+                    Autor: <?= htmlspecialchars($post->getAuthor()) ?> | Fecha: <?= htmlspecialchars($post->getDatetime()) ?>
                 </small>
                 <br>
                 <?php if ($_SESSION['user']): ?>
