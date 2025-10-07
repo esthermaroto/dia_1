@@ -1,12 +1,21 @@
 <?php
 require_once('models/Post.php');
 require_once('models/PostRepository.php');
+require_once('models/Coment.php');
+require_once('models/ComentRepository.php');
+
+// Mostrar formulario para nuevo post
+if (isset($_GET['action']) && $_GET['action'] === 'new'&& isset($_GET['coment'])) {
+    require_once 'views/comentView.phtml';
+    exit;
+}
 
 // Mostrar formulario para nuevo post
 if (isset($_GET['action']) && $_GET['action'] === 'new') {
     require_once 'views/newPostView.phtml';
     exit;
 }
+
 //Crear post 
 if (isset($_POST['title']) && isset($_POST['text'])) {
     $title = $_POST['title'];
@@ -23,6 +32,16 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     exit;
 }
 
+//Mostrar post
+//Crear comentario
+if (isset($_POST['content'])) {
+    $content = $_POST['content'];
+    $author = $_SESSION['user']->getId();
+    $coment = ComentRepository::createComent($content, $author, $_GET['id']);
+    header('Location: index.php?c=blog');
+    exit;
+}
+
 if(isset($_GET['id'])){
     $post = PostRepository::getPostByID($_GET['id']);
     require_once 'views/postView.phtml';
@@ -32,6 +51,3 @@ if(isset($_GET['id'])){
     $posts = PostRepository::getPosts();
     require_once 'views/blogView.phtml';
     exit;
-
-
-
