@@ -6,6 +6,7 @@ class Post{
     private $datetime;
     private $id;
 
+
     public function __construct($title, $text, $author, $datetime, $id = null){
         $this->title = $title;
         $this->text = $text;

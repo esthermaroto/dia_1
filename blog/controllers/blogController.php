@@ -22,7 +22,17 @@ if (isset($_POST['title']) && isset($_POST['text'])) {
 
 //Borrar post
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $post = PostRepository::deletePost($_GET['id']);
+    if (!$_SESSION['user']) {
+        header('Location: index.php');
+        exit;
+    }
+    // Solo borra si el post existe y el autor es el usuario actual
+    $post = PostRepository::getPostByID($_GET['id']);
+    // El admin (rol 1) o el autor del post pueden borrar
+    if($post && ($_SESSION['user']->getRol() == 0 || $post->getAuthor() == $_SESSION['user']->getId())){
+        PostRepository::deletePost($_GET['id']);
+    }
+    header('Location: index.php?c=blog');
     exit;
 }
 
@@ -38,7 +48,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'coment' && isset($_POST['cont
 
 //Borrar comentario
 if (isset($_GET['action']) && $_GET['action'] === 'deleteComent' && isset($_GET['id'])) {
-    if (!$_SESSION['user']) {
+    if (!$_SESSION['user']){
         header('Location: index.php');
         exit;
     }
@@ -46,12 +56,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'deleteComent' && isset($_GET[
     $coment = ComentRepository::getComentByID($idComent);
 
     // Solo borra si el comentario existe y el autor es el usuario actual
-    if ($coment && $coment->getAuthor() == $_SESSION['user']->getId()) {
+    // El admin (rol 1) o el autor del comentario pueden borrar
+    if ($coment && ($_SESSION['user']->getRol() == 0 || $coment->getAuthor() == $_SESSION['user']->getId())) {
         ComentRepository::deleteComent($idComent);
+        header('Location: index.php?c=blog&id=' . $coment->getPost());
+        exit;
     }
-    // Redirigir de vuelta al post
-    header('Location: index.php?c=blog&id=' . $coment->getPost());
-    exit;
 }
 
 if(isset($_GET['id'])){
