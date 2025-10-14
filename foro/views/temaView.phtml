@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema</title>
+</head>
+<body>
+    <?php
+        echo "<h1>" . $tema->getTitle() . "</h1>";
+        echo "<p>" . $tema->getText() . "</p>";
+    ?>
+    <hr>
+        <p>Publicado por: <?php echo $tema->getAuthorUsername(); ?> | Fecha: <?php echo (new DateTime($tema->getDateTime()))->format('d/m/Y - H:i'); ?> </p>
+    <hr>
+    <h4>Añadir un comentario</h4>
+    <form action="index.php?c=foro&action=coment&id=<?= $_GET['id'] ?>" method="POST">
+            <label for="content">Comentario:</label><br>
+            <textarea id="content" name="content" placeholder="Escribe tu comentario aquí..." rows="4" cols="50" required></textarea><br><br>
+            <input type="submit" value="Enviar Comentario">
+        </form>
+        <hr>
+    <a href='index.php'>Volver al foro</a> 
+    <h3>Comentarios</h3>     
+    <?php if (isset($coments) && count($coments) > 0): ?>
+        <?php foreach ($coments as $coment): ?>
+            <div style="border: 1px solid #eee; padding: 10px; margin-bottom: 10px;">
+                <p><?= ($coment->getContent()) ?></p>
+                <small>Autor: <?= htmlspecialchars(UserRepository::getUserById($coment->getAuthor())->getUsername()) ?></small>
+                <?php if ($_SESSION['user'] && ($_SESSION['user']->getRol() ==  1 || $_SESSION['user']->getId() == $coment->getAuthor())): ?>
+                    <br>
+                    <a href="index.php?c=foro&action=deleteComent&id=<?= $coment->getId() ?>"style="color:red; font-size: 0.8em;">Borrar</a>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No hay comentarios todavía. ¡Sé el primero en comentar!</p>
+    <?php endif; ?>
+        <hr>
+    <br>
+</body>
+</html>

@@ -1,5 +1,6 @@
 <?php
 $db = Connection::connect();
+$message = '';
 require_once('models/User.php');
 require_once('models/UserRepository.php');
 
@@ -15,14 +16,21 @@ if(!isset($_SESSION['user'])){
 
 //login
 if (isset($_POST['username']) && isset($_POST['password']) && !isset($_POST['register'])) {
-    $user = UserRepository::logUser($username, $password);
+    if(!UserRepository::logUser($_POST['username'], $_POST['password'])){
+        $message = "❌ Usuario o contraseña incorrectos.";
+    }
+    
 }
 
 //registro
 if(isset($_POST['register'])){
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $user = UserRepository::registerUser($username, $password);
+    if(UserRepository::registerUser($username, $password)){
+        $message = "✅ Usuario registrado correctamente.";
+    } else {
+        $message = "❌ El usuario ya existe.";
+    }
     exit;
 }
 
@@ -37,4 +45,3 @@ if(!$_SESSION['user']){
     require_once 'views/userView.phtml';
     exit;
 }
-

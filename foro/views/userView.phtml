@@ -13,6 +13,11 @@
             <input type="password" name="password" placeholder="contraseña" />
             <input type="submit" value="Entrar" />
             <a href="index.php?c=register&register=1">Registrarse</a>
-    </form>
+    </form>    
+    <?php 
+        if (isset($message)) {
+            echo "<p>" . $message . "</p>";
+        }
+    ?>
 </body>
 </html>

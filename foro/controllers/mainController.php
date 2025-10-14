@@ -13,7 +13,7 @@ if(isset($_GET['c'])){
     if(!$_SESSION['user']){
         require_once('controllers/registerController.php');
     } else {
-       require_once('controllers/blogController.php');
+       require_once('controllers/foroController.php');
     }
 }
 

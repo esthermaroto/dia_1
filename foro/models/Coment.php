@@ -2,13 +2,13 @@
 class Coment{
     private $content;
     private $author;
-    private $post;
+    private $tema;
     private $id;
 
-    public function __construct($content, $author, $post, $id = null){
+    public function __construct($content, $author, $tema, $id = null){
         $this->content = $content;
         $this->author = $author;
-        $this->post = $post;
+        $this->tema = $tema;
         $this->id = $id;
     }
 
@@ -20,8 +20,8 @@ class Coment{
         return $this->author;
     }
     
-    public function getPost(){
-        return $this->post;
+    public function getTema(){
+        return $this->tema;
     }
     
     public function getId(){

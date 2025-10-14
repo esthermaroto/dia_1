@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foro</title>
+</head>
+<body>
+    <h1> Foro </h1>
+    <?php if ($_SESSION['user']): ?>           
+        <a href="index.php?c=foro&action=new">Añadir</a>
+        <br><a href='index.php?c=register&logout=1'>Cerrar sesión</a>
+    <?php endif; ?>
+    <hr>
+
+    <?php if (isset($temas) && is_array($temas) && count($temas) > 0): ?>
+        <?php foreach($temas as $tema): ?>
+            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+                <h2><?= $tema->getTitle() ?></h2>
+                <p><?= $tema->getText() ?></p>
+                <small>
+                    Autor: <?= $tema->getAuthorUsername() ?> | Fecha: <?= (new DateTime($tema->getDatetime()))->format('d/m/Y - H:i') ?>
+                </small>
+                <br>
+                <?php if ($_SESSION['user'] && ($_SESSION['user']->getRol() ==  0 || $_SESSION['user']->getId() == $tema->getAuthor())): ?>
+                    <a href="index.php?c=foro&action=delete&id=<?= $tema->getId() ?>" style="color:red; font-size: 0.8em;">Borrar</a>
+                <?php endif; ?>
+                <br>
+                    <a href="index.php?c=foro&id=<?= $tema->getId() ?>">Ver</a>
+            </div>
+        <?php endforeach; ?>
+        <?php else: ?>
+            <p>No hay temas para mostrar.</p>
+        <?php endif; ?>
+</body>
+</html>
