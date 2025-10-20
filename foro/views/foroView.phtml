@@ -19,7 +19,7 @@
                 <h2><?= $tema->getTitle() ?></h2>
                 <p><?= $tema->getText() ?></p>
                 <small>
-                    Autor: <?= $tema->getAuthorUsername() ?> | Fecha: <?= (new DateTime($tema->getDatetime()))->format('d/m/Y - H:i') ?>
+                    Autor: <img src="img/<?= $tema->getAuthorProfilePicture() ?>" alt="Avatar" width="20" height="20" style="vertical-align: middle; border-radius: 50%;"> <?= $tema->getAuthorUsername() ?> | Fecha: <?= (new DateTime($tema->getDatetime()))->format('d/m/Y - H:i') ?>
                 </small>
                 <br>
                 <?php if ($_SESSION['user'] && ($_SESSION['user']->getRol() ==  0 || $_SESSION['user']->getId() == $tema->getAuthor())): ?>
