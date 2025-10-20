@@ -26,7 +26,7 @@ class UserRepository{
                 
             }
             else{
-                    $q = 'INSERT INTO users (username, password) VALUES("'.$_POST['username'].'","'.md5($_POST['password']).'")';            
+                    $q = 'INSERT INTO users (username, password, rol) VALUES("'.$_POST['username'].'","'.md5($_POST['password']).'", 1)';
                     if($db->query($q)){
                     $id = $db->insert_id;
                     $_SESSION['user'] = new User($_POST['username'], $id, 1); // Asignar rol de usuario normal (1)
