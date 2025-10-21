@@ -10,6 +10,12 @@
 <body>
     <div class="main-container">
         <h1>Carrito de Compras</h1>
+        
+        <?php if(isset($_SESSION['user']) && $_SESSION['user']): ?>
+            <p style="text-align: center; color: #666; font-style: italic;">
+                Carrito personal de: <strong><?php echo htmlspecialchars($_SESSION['user']->getUsername()); ?></strong>
+            </p>
+        <?php endif; ?>
 
         <div class="nav-links">
             <a href="index.php?c=shop" class="btn-secondary">Volver a la tienda</a>
@@ -61,7 +67,10 @@
 
             <div class="cart-total">
                 <p>Total del carrito: <strong><?php echo htmlspecialchars(number_format($cartTotal, 2)); ?> €</strong></p>
-                <a href="index.php?c=cart&action=checkout" class="btn">Proceder al pago</a>
+                <div style="margin-top: 1rem;">
+                    <a href="index.php?c=cart&action=checkout" class="btn">Proceder al pago</a>
+                    <a href="index.php?c=cart&action=clear" class="btn-secondary" style="margin-left: 10px;" onclick="return confirm('¿Estás seguro de que quieres vaciar el carrito?')">Vaciar carrito</a>
+                </div>
             </div>
         <?php endif; ?>
     </div>

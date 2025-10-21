@@ -16,6 +16,12 @@ switch ($action) {
         if(isset($_GET['id'])){
             $idProducto = intval($_GET['id']);
             
+            // Verificar que el usuario está logueado
+            if (!isset($_SESSION['user']) || !$_SESSION['user']) {
+                header('Location: index.php?c=register');
+                exit;
+            }
+            
             // Verificar que el producto existe y tiene stock
             $product = ProductoRepository::getProductById($idProducto);
             if (!$product) {
@@ -23,10 +29,12 @@ switch ($action) {
                 exit;
             }
 
+            $userId = $_SESSION['user']->getidUsuario();
             if(!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
+            if(!isset($_SESSION['cart'][$userId])) $_SESSION['cart'][$userId] = [];
 
             // Calcular la cantidad que se añadiría al carrito
-            $newQuantity = isset($_SESSION['cart'][$idProducto]) ? $_SESSION['cart'][$idProducto] + 1 : 1;
+            $newQuantity = isset($_SESSION['cart'][$userId][$idProducto]) ? $_SESSION['cart'][$userId][$idProducto] + 1 : 1;
             
             // Verificar si hay suficiente stock
             if (!ProductoRepository::hasEnoughStock($idProducto, $newQuantity)) {
@@ -35,11 +43,11 @@ switch ($action) {
                 exit;
             }
 
-            // Añadir al carrito
-            if(isset($_SESSION['cart'][$idProducto])){
-                $_SESSION['cart'][$idProducto]++;
+            // Añadir al carrito del usuario específico
+            if(isset($_SESSION['cart'][$userId][$idProducto])){
+                $_SESSION['cart'][$userId][$idProducto]++;
             } else {
-                $_SESSION['cart'][$idProducto] = 1;
+                $_SESSION['cart'][$userId][$idProducto] = 1;
             }
 
             // Redirigir a la vista del carrito
@@ -49,11 +57,18 @@ switch ($action) {
         break;
 
     case 'view':
+        // Verificar que el usuario está logueado
+        if (!isset($_SESSION['user']) || !$_SESSION['user']) {
+            header('Location: index.php?c=register');
+            exit;
+        }
+
+        $userId = $_SESSION['user']->getidUsuario();
         $cartItems = [];
         $cartTotal = 0;
 
-        if(isset($_SESSION['cart']) && !empty($_SESSION['cart'])){
-            foreach($_SESSION['cart'] as $productId => $quantity){
+        if(isset($_SESSION['cart'][$userId]) && !empty($_SESSION['cart'][$userId])){
+            foreach($_SESSION['cart'][$userId] as $productId => $quantity){
                 $product = ProductoRepository::getProductById($productId);
                 if($product){
                     $total = $product->getPrice() * $quantity;
@@ -74,7 +89,13 @@ switch ($action) {
     
     case 'checkout':
         // 1. Comprobar que el usuario está logueado y el carrito no está vacío.
-        if (!isset($_SESSION['user']) || empty($_SESSION['cart'])) {
+        if (!isset($_SESSION['user']) || !$_SESSION['user']) {
+            header('Location: index.php?c=register');
+            exit;
+        }
+
+        $userId = $_SESSION['user']->getidUsuario();
+        if (!isset($_SESSION['cart'][$userId]) || empty($_SESSION['cart'][$userId])) {
             header('Location: index.php?c=shop');
             exit;
         }
@@ -82,7 +103,7 @@ switch ($action) {
         // 2. Verificar stock disponible antes de proceder
         $stockAvailable = true;
         $stockErrors = [];
-        foreach ($_SESSION['cart'] as $productId => $quantity) {
+        foreach ($_SESSION['cart'][$userId] as $productId => $quantity) {
             if (!ProductoRepository::hasEnoughStock($productId, $quantity)) {
                 $stockAvailable = false;
                 $product = ProductoRepository::getProductById($productId);
@@ -100,7 +121,7 @@ switch ($action) {
 
         // 3. Calcular el total del carrito.
         $cartTotal = 0;
-        foreach ($_SESSION['cart'] as $productId => $quantity) {
+        foreach ($_SESSION['cart'][$userId] as $productId => $quantity) {
             $product = ProductoRepository::getProductById($productId);
             if ($product) {
                 $cartTotal += $product->getPrice() * $quantity;
@@ -116,7 +137,7 @@ switch ($action) {
             $detalleSuccess = true;
             $stockReductionSuccess = true;
             
-            foreach ($_SESSION['cart'] as $productId => $quantity) {
+            foreach ($_SESSION['cart'][$userId] as $productId => $quantity) {
                 $product = ProductoRepository::getProductById($productId);
                 if ($product) {
                     // Crear detalle del pedido
@@ -136,8 +157,8 @@ switch ($action) {
             }
 
             if ($detalleSuccess && $stockReductionSuccess) {
-                // 6. Limpiar el carrito de la sesión.
-                unset($_SESSION['cart']);
+                // 6. Limpiar el carrito del usuario específico.
+                unset($_SESSION['cart'][$userId]);
 
                 // 7. Redirigir a una página de confirmación.
                 header('Location: index.php?c=order&action=confirm&id=' . $idPedido);
@@ -154,6 +175,18 @@ switch ($action) {
             header('Location: index.php?c=cart&error=checkout_failed');
             exit;
         }
+        break;
+
+    case 'clear':
+        // Limpiar el carrito del usuario actual
+        if (isset($_SESSION['user']) && $_SESSION['user']) {
+            $userId = $_SESSION['user']->getidUsuario();
+            if (isset($_SESSION['cart'][$userId])) {
+                unset($_SESSION['cart'][$userId]);
+            }
+        }
+        header('Location: index.php?c=cart&action=view');
+        exit;
         break;
 
     // Aquí podrías añadir más casos, como 'confirm' para mostrar una página de éxito.
