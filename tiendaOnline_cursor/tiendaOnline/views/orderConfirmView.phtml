@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Realizado con Éxito</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        .success-container {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+        .success-message {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .order-details {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-container {
+            margin-top: 2rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background 0.3s;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="success-container">
+            <div class="success-icon">✅</div>
+            <h1>¡Pago Realizado con Éxito!</h1>
+            
+            <div class="success-message">
+                <p><strong><?php echo htmlspecialchars($message); ?></strong></p>
+                <p>Tu pedido ha sido procesado correctamente y el pago se ha realizado con éxito.</p>
+            </div>
+
+            <div class="order-details">
+                <h3>Detalles del Pedido</h3>
+                <p><strong>Número de Pedido:</strong> #<?php echo htmlspecialchars($idPedido); ?></p>
+                <p><strong>Fecha:</strong> <?php echo date('d/m/Y H:i'); ?></p>
+                <p><strong>Estado:</strong> <span style="color: #28a745;">Procesado</span></p>
+            </div>
+
+            <div class="btn-container">
+                <a href="index.php?c=shop" class="btn">Volver a la Tienda</a>
+                <a href="index.php?c=order&action=view" class="btn-secondary">Ver Mis Pedidos</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
