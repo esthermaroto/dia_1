@@ -41,4 +41,9 @@ class Producto {
         return $this->imagen;
     }
 
+    // Getter dinámico para saber si está disponible
+    public function isDisponible() {
+        return $this->stock > 0;
+    }
+
 }
