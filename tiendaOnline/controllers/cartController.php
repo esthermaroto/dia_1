@@ -1,6 +1,6 @@
 <?php
 require_once 'models/PedidoRepository.php';
-require_once 'models/DetallePedidoRepository.php';
+require_once 'models/DPRepository.php';
 require_once 'models/ProductoRepository.php'; 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -35,7 +35,7 @@ switch ($action) {
             foreach ($_SESSION['cart'] as $productId => $quantity) {
                 $product = ProductoRepository::getProductById($productId);
                 if ($product) {
-                    DetallePedidoRepository::createDetalle($idPedido, $productId, $quantity, $product->getPrice());
+                    DPRepository::createDetalle($idPedido, $productId, $quantity, $product->getPrice());
                 }
             }
 
