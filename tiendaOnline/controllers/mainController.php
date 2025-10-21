@@ -1,22 +1,16 @@
 <?php
-require_once('models/User.php');
-
+require_once 'models/User.php';
 session_start();
 
-if (!isset($_SESSION['user'])) {
+// Inicializar sesión si no existe
+if(!isset($_SESSION['user'])){
     $_SESSION['user'] = false;
 }
 
+// Detectar qué controlador cargar
 if(isset($_GET['c'])){
     require_once('controllers/'.$_GET['c'].'Controller.php');
 } else {
-    if(!$_SESSION['user']){
-        require_once('controllers/registerController.php');
-    } else {
-       require_once('controllers/shopController.php');
-    }
+    // Siempre mostrar la tienda
+    require_once('controllers/shopController.php');
 }
-
-
-    
-

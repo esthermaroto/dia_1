@@ -68,9 +68,13 @@
         <h1>Tienda</h1>
 
         <div class="nav-links">
-            <a href="index.php?c=shop&action=newProduct" class="btn-secondary">Agregar nuevo producto</a>
-            <a href="index.php?c=cart&action=view" class="btn">Ver carrito</a>
-            <a href="index.php?c=register&logout=1" class="btn-danger">Cerrar sesión</a>
+            <?php if(isset($_SESSION['user']) && $_SESSION['user'] !== false): ?>
+                <a href="index.php?c=shop&action=newProduct" class="btn-secondary">Agregar nuevo producto</a>
+                <a href="index.php?c=cart&action=view" class="btn">Ver carrito</a>
+                <a href="index.php?c=register&logout=1" class="btn-danger">Cerrar sesión</a>
+            <?php else: ?>
+                <a href="index.php?c=register" class="btn-secondary">Iniciar sesión / Registrarse</a>
+            <?php endif; ?>
         </div>
 
         <?php if(isset($_GET['message'])): ?>
@@ -96,11 +100,14 @@
                     <p class="availability">
                         <?php echo ($producto->getStock() > 0) ? '✅ Disponible' : '❌ Agotado'; ?>
                     </p>
-                    <a href="index.php?c=cart&action=add&id=<?php echo $producto->getIdProducto(); ?>" class="btn">Añadir al carrito</a>
-                    <br>
-                    <a href="index.php?c=shop&action=editProduct&id=<?php echo $producto->getIdProducto(); ?>" class="btn-secondary">Editar</a>
-                    <a href="index.php?c=shop&action=deleteProduct&id=<?php echo $producto->getIdProducto(); ?>" class="btn-danger"
-                       onclick="return confirm('¿Seguro que quieres eliminar este producto?');">Eliminar</a>
+
+                    <?php if(isset($_SESSION['user']) && $_SESSION['user'] !== false): ?>
+                        <a href="index.php?c=cart&action=add&id=<?php echo $producto->getIdProducto(); ?>" class="btn">Añadir al carrito</a>
+                        <br>
+                        <a href="index.php?c=shop&action=editProduct&id=<?php echo $producto->getIdProducto(); ?>" class="btn-secondary">Editar</a>
+                        <a href="index.php?c=shop&action=deleteProduct&id=<?php echo $producto->getIdProducto(); ?>" class="btn-danger"
+                           onclick="return confirm('¿Seguro que quieres eliminar este producto?');">Eliminar</a>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>
