@@ -18,7 +18,7 @@ class User{
     }
 
 
-    public function getid(){
+    public function getidUsuario(){
         return $this->idUsuario;
     }
 

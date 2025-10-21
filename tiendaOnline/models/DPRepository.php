@@ -1,22 +1,11 @@
 <?php
 class DPRepository {
-    public static function createPedido($fecha_pedido, $estado, $total) {
-        $db = Connection::connect();
-        $stmt = $db->prepare("INSERT INTO pedidos (fecha_pedido, estado, total) VALUES (:fecha_pedido, :estado, :total)");
-        $stmt->bindParam(':fecha_pedido', $fecha_pedido);
-        $stmt->bindParam(':estado', $estado);
-        $stmt->bindParam(':total', $total);
-        return $stmt->execute();
-    }
-
-    public static function getAllPedidos() {
-        $db = Connection::connect();
-        $stmt = $db->query("SELECT * FROM pedidos");
-        $pedidos = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $pedidos[] = new Pedido($row['idPedido'], $row['fecha_pedido'], $row['estado'], $row['total']);
-        }
-        return $pedidos;
+    public static function createDetalle($id_pedido, $id_producto, $cantidad, $precio_unitario) {
+       $db = Connection::connect();
+       $q = "INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad, precio_unitario) VALUES ('".intval($id_pedido)."','".intval($id_producto)."','".intval($cantidad)."','".intval($precio_unitario)."')";
+       $db->query($q);
+         return $db->insert_id;
+         
     }
 
     //calcular total de un pedido

@@ -1,12 +1,17 @@
 <?php
 class PedidoRepository {
-    public static function createPedido($fecha_pedido, $estado, $total) {
+    public static function createPedido($idUsuario, $total) {
         $db = Connection::connect();
-        $stmt = $db->prepare("INSERT INTO pedidos (fecha_pedido, estado, total) VALUES (:fecha_pedido, :estado, :total)");
-        $stmt->bindParam(':fecha_pedido', $fecha_pedido);
-        $stmt->bindParam(':estado', $estado);
-        $stmt->bindParam(':total', $total);
-        return $stmt->execute();
+        // El estado por defecto será 'Pendiente'. La fecha se inserta automáticamente con current_timestamp().
+        $estado = 'Pendiente';
+        $sql = "INSERT INTO pedido (idUsuario, estado, total) VALUES (?, ?, ?)";
+        $stmt = $db->prepare($sql);
+        if (!$stmt) die("Error: " . $db->error);
+        $stmt->bind_param("isd", $idUsuario, $estado, $total);
+        if ($stmt->execute()) {
+            return $db->insert_id; // Devolvemos el ID del pedido creado.
+        }
+        return false; // Devolvemos false si falla.
     }
 
     public static function getAllPedidos() {

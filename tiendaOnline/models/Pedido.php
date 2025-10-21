@@ -8,7 +8,7 @@ class Pedido {
 
     public function __construct($idPedido, $fecha_pedido, $estado, $total) {
         $this->idPedido = $idPedido;
-        $this->frecha_pedido = $fecha_pedido;
+        $this->fecha_pedido = $fecha_pedido;
         $this->estado = $estado;
         $this->total = $total;
     }

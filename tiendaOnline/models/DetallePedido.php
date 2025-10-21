@@ -7,7 +7,7 @@ class DetallePedido {
     private $precio_unitario;
 
     
-    public function __construct($id_detalle = null, $id_pedido = null, $id_producto = null, $cantidad = null, $precio_unitario = null) {
+    public function __construct($id_detalle = null, $id_pedido = null, $id_producto = null, $cantidad, $precio_unitario) {
         $this->id_detalle = $id_detalle;
         $this->id_pedido = $id_pedido;
         $this->id_producto = $id_producto;
