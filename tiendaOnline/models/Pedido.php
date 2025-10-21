@@ -2,14 +2,14 @@
 
 class Pedido {
     private $idPedido;
-    private $product;
-    private $cuantity;
+    private $fecha_pedido;
+    private $estado;
     private $total;
 
-    public function __construct($idPedido, $product, $cuantity, $total) {
+    public function __construct($idPedido, $fecha_pedido, $estado, $total) {
         $this->idPedido = $idPedido;
-        $this->product = $product;
-        $this->cuantity = $cuantity;
+        $this->frecha_pedido = $fecha_pedido;
+        $this->estado = $estado;
         $this->total = $total;
     }
 
@@ -17,12 +17,12 @@ class Pedido {
         return $this->idPedido;
     }
 
-    public function getProduct() {
-        return $this->product;
+    public function getFechaPedido() {
+        return $this->fecha_pedido;
     }
-    
-    public function getCuantity() {
-        return $this->cuantity;
+
+    public function getEstado() {
+        return $this->estado;
     }
 
     public function getTotal() {

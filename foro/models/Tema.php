@@ -6,15 +6,17 @@ class Tema {
     private $author;
     private $datetime;
     private $authorUsername;
+    private $authorProfilePicture;
     private $comments;
 
-    public function __construct($id, $title, $text, $author, $datetime, $authorUsername = null) {
+    public function __construct($id, $title, $text, $author, $datetime, $authorUsername = null, $authorProfilePicture = null) {
         $this->id = $id;
         $this->title = $title;
         $this->text = $text;
         $this->author = $author;
         $this->datetime = $datetime;
         $this->authorUsername = $authorUsername;
+        $this->authorProfilePicture = $authorProfilePicture;
         $this->comments = array();
     }
 
@@ -40,6 +42,10 @@ class Tema {
 
     public function getAuthorUsername() {
         return $this->authorUsername;
+    }
+
+    public function getAuthorProfilePicture() {
+        return $this->authorProfilePicture;
     }
 
     public function getComments() {

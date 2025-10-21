@@ -2,14 +2,13 @@
 class User{
 
     private $username;
-    private $id;
+    private $idUsuario;
     private $rol;
     private $profilePicture;
 
-
-    public function __construct($username, $id, $rol, $profilePicture = null){
+    public function __construct($username, $idUsuario, $rol, $profilePicture = null){
         $this->username = $username;
-        $this->id = $id;
+        $this->idUsuario = $idUsuario;
         $this->rol = $rol;
         $this->profilePicture = $profilePicture;
     }
@@ -19,8 +18,8 @@ class User{
     }
 
 
-    public function getId(){
-        return $this->id;
+    public function getid(){
+        return $this->idUsuario;
     }
 
     public function getRol(){
@@ -30,5 +29,6 @@ class User{
     public function getProfilePicture(){
         return $this->profilePicture;
     }
+
 }
 ?>

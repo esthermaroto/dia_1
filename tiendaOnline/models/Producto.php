@@ -7,16 +7,14 @@ class Pedido {
     private $stock;
     private $price;
     private $imagen;
-    private $disponibilidad;
 
-    public function __construct($idProducto, $name, $description, $stock, $price, $imagen, $disponibilidad) {
+    public function __construct($idProducto, $name, $description, $stock, $price, $imagen) {
         $this->idProducto = $idProducto;
         $this->name = $name;
         $this->description = $description;
         $this->stock = $stock;
         $this->price = $price;
         $this->imagen = $imagen;
-        $this->disponibilidad = $disponibilidad;
     }
 
     public function getIdProducto() {
@@ -43,7 +41,4 @@ class Pedido {
         return $this->imagen;
     }
 
-    public function getDisponibilidad() {
-        return $this->disponibilidad;
-    }
 }

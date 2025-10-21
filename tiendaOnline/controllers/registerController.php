@@ -3,6 +3,7 @@ $db = Connection::connect();
 $message = '';
 require_once('models/User.php');
 require_once('models/UserRepository.php');
+require_once('helpers/FileHelper.php');
 
 //logout
 if(isset($_GET['logout'])){
@@ -26,12 +27,25 @@ if (isset($_POST['username']) && isset($_POST['password']) && !isset($_POST['reg
 if(isset($_POST['register'])){
     $username = $_POST['username'];
     $password = $_POST['password'];
-    if(UserRepository::registerUser($username, $password)){
-        $message = "✅ Usuario registrado correctamente.";
-    } else {
-        $message = "❌ El usuario ya existe.";
+    // 1. Establecer el nombre de archivo por defecto.
+    $filename = 'default_picture.png';
+    
+    // 2. Comprobar si se ha subido un archivo sin errores.
+    if (isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] === UPLOAD_ERR_OK) {
+        $originalName = $_FILES['profilePicture']['name'];
+        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+        // 3. Generar un nombre único para evitar sobreescribir archivos.
+        $uniqueFilename = uniqid('user_', true) . '.' . $extension;
+        
+        // 4. Mover el archivo y, si tiene éxito, usar el nuevo nombre.
+        if (FileHelper::fileHandler($_FILES['profilePicture']['tmp_name'], 'img/' . $uniqueFilename)) {
+            $filename = $uniqueFilename;
+        }
     }
-    exit;
+
+    if(!UserRepository::registerUser($username, $password, $filename)){
+        $message = "❌ El usuario ya existe o los datos son inválidos.";
+    }
 }
 
 //vista registro

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop front view</title>
+</head>
+<body>
+    <h1> Tienda </h1>
+    
+    <form action="index.php?c=shop" method="POST">
+            <input type="text" name="search" placeholder="Buscar producto" />
+            <input type="submit" name="buscar" value="Buscar" />
+    </form>
+
+    <a href="index.php?c=shop&action=newProduct">Agregar nuevo producto</a>
+    <a href="index.php?c=shop&action=viewCart">Ver carrito</a>
+    <br><a href='index.php?c=register&logout=1'>Cerrar sesión</a>
+
+    <?php
+        foreach ($productos as $producto) {
+            echo "<div>";
+            echo "<img src='" . htmlspecialchars($producto->getImagen()) . "' alt='" . htmlspecialchars($producto->getName()) . "' />";
+            echo "<h2>" . htmlspecialchars($producto->getName()) . "</h2>";
+            echo "<p>" . htmlspecialchars($producto->getDescription()) . "</p>";
+            echo "<p>Precio: $" . htmlspecialchars($producto->getPrice()) . "</p>";
+            echo "</div>";
+        }
+    ?>
+    
+</body>
+</html>

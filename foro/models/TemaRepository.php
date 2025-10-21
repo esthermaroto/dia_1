@@ -23,11 +23,11 @@ class TemaRepository{
     //obtener todos los temas de la base de datos
     public static function getTemas(){
         $db = Connection::connect();
-        $q = "SELECT t.*, u.username as author_username FROM tema t JOIN users u ON t.author = u.id ORDER BY t.datetime DESC";
+        $q = "SELECT t.*, u.username as author_username, u.profilePicture as author_profile_picture FROM tema t JOIN users u ON t.author = u.id ORDER BY t.datetime DESC";
         $result = $db->query($q);
         $temas = array();
         while($row = $result->fetch_assoc()){
-            $temas[] = new Tema($row['id'], $row['title'], $row['text'], $row['author'], $row['datetime'], $row['author_username']);
+            $temas[] = new Tema($row['id'], $row['title'], $row['text'], $row['author'], $row['datetime'], $row['author_username'], $row['author_profile_picture']);
         }
         return $temas;
     }
@@ -36,11 +36,11 @@ class TemaRepository{
     public static function getCommentByTema($idTema){
         $db = Connection::connect();
         $id = intval($idTema);
-        $q = "SELECT * FROM comments WHERE tema = $id";
+        $q = "SELECT c.*, u.username as author_username, u.profilePicture as author_profile_picture FROM comments c JOIN users u ON c.author = u.id WHERE c.tema = $id ORDER BY c.datetime ASC";
         $result = $db->query($q);
         $coments = array();
         while($row = $result->fetch_assoc()){
-            $coments[] = new Coment($row['content'], $row['author'], $row['tema'], $row['id']);
+            $coments[] = new Coment($row['content'], $row['author'], $row['tema'], $row['id'], $row['author_username'], $row['author_profile_picture']);
         }
         return $coments;
     }
@@ -48,10 +48,10 @@ class TemaRepository{
     public static function getTemaByID($idTema){
         $db = Connection::connect();
         $id = intval($idTema);
-        $q = "SELECT t.*, u.username as author_username FROM tema t JOIN users u ON t.author = u.id WHERE t.id = " . $id;
+        $q = "SELECT t.*, u.username as author_username, u.profilePicture as author_profile_picture FROM tema t JOIN users u ON t.author = u.id WHERE t.id = " . $id;
         $result = $db->query($q);
         if($row = $result->fetch_assoc()){
-            return new Tema($row['id'], $row['title'], $row['text'], $row['author'], $row['datetime'], $row['author_username']);
+            return new Tema($row['id'], $row['title'], $row['text'], $row['author'], $row['datetime'], $row['author_username'], $row['author_profile_picture']);
         }
         return null;
     }
