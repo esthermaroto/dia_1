@@ -15,9 +15,27 @@ switch ($action) {
     case 'add':
         if(isset($_GET['id'])){
             $idProducto = intval($_GET['id']);
+            
+            // Verificar que el producto existe y tiene stock
+            $product = ProductoRepository::getProductById($idProducto);
+            if (!$product) {
+                header('Location: index.php?c=shop&error=product_not_found');
+                exit;
+            }
 
             if(!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 
+            // Calcular la cantidad que se añadiría al carrito
+            $newQuantity = isset($_SESSION['cart'][$idProducto]) ? $_SESSION['cart'][$idProducto] + 1 : 1;
+            
+            // Verificar si hay suficiente stock
+            if (!ProductoRepository::hasEnoughStock($idProducto, $newQuantity)) {
+                $currentStock = ProductoRepository::getCurrentStock($idProducto);
+                header('Location: index.php?c=shop&error=insufficient_stock&product=' . urlencode($product->getName()) . '&stock=' . $currentStock);
+                exit;
+            }
+
+            // Añadir al carrito
             if(isset($_SESSION['cart'][$idProducto])){
                 $_SESSION['cart'][$idProducto]++;
             } else {
@@ -61,7 +79,26 @@ switch ($action) {
             exit;
         }
 
-        // 2. Calcular el total del carrito.
+        // 2. Verificar stock disponible antes de proceder
+        $stockAvailable = true;
+        $stockErrors = [];
+        foreach ($_SESSION['cart'] as $productId => $quantity) {
+            if (!ProductoRepository::hasEnoughStock($productId, $quantity)) {
+                $stockAvailable = false;
+                $product = ProductoRepository::getProductById($productId);
+                $currentStock = ProductoRepository::getCurrentStock($productId);
+                $stockErrors[] = "Producto '{$product->getName()}' - Disponible: $currentStock, Solicitado: $quantity";
+            }
+        }
+
+        if (!$stockAvailable) {
+            // Redirigir con error de stock insuficiente
+            $errorMessage = "Stock insuficiente: " . implode(", ", $stockErrors);
+            header('Location: index.php?c=cart&error=insufficient_stock&details=' . urlencode($errorMessage));
+            exit;
+        }
+
+        // 3. Calcular el total del carrito.
         $cartTotal = 0;
         foreach ($_SESSION['cart'] as $productId => $quantity) {
             $product = ProductoRepository::getProductById($productId);
@@ -70,34 +107,44 @@ switch ($action) {
             }
         }
 
-        // 3. Crear el pedido en la tabla `pedido`.
+        // 4. Crear el pedido en la tabla `pedido`.
         $idUsuario = $_SESSION['user']->getidUsuario();
         $idPedido = PedidoRepository::createPedido($idUsuario, $cartTotal);
 
         if ($idPedido) {
-            // 4. Si el pedido se crea correctamente, guardar cada producto en `detalle_pedido`.
+            // 5. Si el pedido se crea correctamente, guardar cada producto en `detalle_pedido` y reducir stock.
             $detalleSuccess = true;
+            $stockReductionSuccess = true;
+            
             foreach ($_SESSION['cart'] as $productId => $quantity) {
                 $product = ProductoRepository::getProductById($productId);
                 if ($product) {
+                    // Crear detalle del pedido
                     $detalleResult = DPRepository::createDetalle($idPedido, $productId, $quantity, $product->getPrice());
                     if (!$detalleResult) {
                         $detalleSuccess = false;
                         error_log("Error al crear detalle para producto $productId en pedido $idPedido");
+                    } else {
+                        // Reducir stock del producto
+                        $stockResult = ProductoRepository::reduceStock($productId, $quantity);
+                        if (!$stockResult) {
+                            $stockReductionSuccess = false;
+                            error_log("Error al reducir stock para producto $productId en pedido $idPedido");
+                        }
                     }
                 }
             }
 
-            if ($detalleSuccess) {
-                // 5. Limpiar el carrito de la sesión.
+            if ($detalleSuccess && $stockReductionSuccess) {
+                // 6. Limpiar el carrito de la sesión.
                 unset($_SESSION['cart']);
 
-                // 6. Redirigir a una página de confirmación.
+                // 7. Redirigir a una página de confirmación.
                 header('Location: index.php?c=order&action=confirm&id=' . $idPedido);
                 exit;
             } else {
-                // Si falló algún detalle, eliminar el pedido creado
-                error_log("Error al crear detalles del pedido $idPedido, eliminando pedido");
+                // Si falló algún detalle o reducción de stock, eliminar el pedido creado
+                error_log("Error al procesar pedido $idPedido, eliminando pedido");
                 header('Location: index.php?c=cart&error=checkout_failed');
                 exit;
             }

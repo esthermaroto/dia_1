@@ -5,7 +5,7 @@ class PedidoRepository {
     public static function createPedido($idUsuario, $total) {
         $db = Connection::connect();
         // El estado por defecto será 'Pendiente'. La fecha se inserta automáticamente con current_timestamp().
-        $estado = 'Pendiente';
+        $estado = 'Pagado';
         $sql = "INSERT INTO pedido (idUsuario, estado, total) VALUES (?, ?, ?)";
         $stmt = $db->prepare($sql);
         if (!$stmt) die("Error: " . $db->error);

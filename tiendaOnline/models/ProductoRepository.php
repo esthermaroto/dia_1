@@ -75,4 +75,36 @@ class ProductoRepository {
                 WHERE idProducto=$id";
         return $db->query($sql);
     }
+
+    // Reducir stock de un producto
+    public static function reduceStock($idProducto, $cantidad) {
+        $db = Connection::connect();
+        $id = intval($idProducto);
+        $cantidad = intval($cantidad);
+        
+        // Primero verificar que hay suficiente stock
+        $product = self::getProductById($id);
+        if (!$product || $product->getStock() < $cantidad) {
+            return false;
+        }
+        
+        // Reducir el stock
+        $sql = "UPDATE producto SET stock = stock - $cantidad WHERE idProducto = $id";
+        return $db->query($sql);
+    }
+
+    // Verificar si hay suficiente stock
+    public static function hasEnoughStock($idProducto, $cantidad) {
+        $product = self::getProductById($idProducto);
+        if (!$product) {
+            return false;
+        }
+        return $product->getStock() >= $cantidad;
+    }
+
+    // Obtener stock actual de un producto
+    public static function getCurrentStock($idProducto) {
+        $product = self::getProductById($idProducto);
+        return $product ? $product->getStock() : 0;
+    }
 }

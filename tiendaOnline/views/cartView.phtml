@@ -22,6 +22,12 @@
                     case 'checkout_failed':
                         echo "❌ Error al procesar el pedido. Por favor, inténtalo de nuevo.";
                         break;
+                    case 'insufficient_stock':
+                        echo "❌ Stock insuficiente para completar la compra.";
+                        if(isset($_GET['details'])) {
+                            echo "<br><small>" . htmlspecialchars(urldecode($_GET['details'])) . "</small>";
+                        }
+                        break;
                     default:
                         echo "❌ Ha ocurrido un error inesperado.";
                 }
