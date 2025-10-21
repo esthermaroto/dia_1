@@ -1,5 +1,5 @@
 <?php
-class DPRepository {
+class PedidoRepository {
     public static function createPedido($fecha_pedido, $estado, $total) {
         $db = Connection::connect();
         $stmt = $db->prepare("INSERT INTO pedidos (fecha_pedido, estado, total) VALUES (:fecha_pedido, :estado, :total)");

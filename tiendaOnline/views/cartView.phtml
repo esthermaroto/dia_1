@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order view</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/cart.css">
+</head>
+<body>
+    <div class="main-container">
+        <h1>Carrito de Compras</h1>
+        <div class="nav-links">
+            <a href="index.php?c=shop" class="btn-secondary">Volver a la tienda</a>
+        </div>
+        
+        <?php if (empty($cartItems)): ?>
+            <p style="text-align: center;">El carrito está vacío.</p>
+        <?php else: ?>
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($cartItems as $item): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($item['name']); ?></td>
+                            <td><?php echo htmlspecialchars($item['quantity']); ?></td>
+                            <td><?php echo htmlspecialchars(number_format($item['price'], 2)); ?> €</td>
+                            <td><?php echo htmlspecialchars(number_format($item['total'], 2)); ?> €</td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <div class="cart-total">
+                <p>Total del carrito: <strong><?php echo htmlspecialchars(number_format($cartTotal, 2)); ?> €</strong></p>
+                <a href="index.php?c=shop&action=checkout" class="btn">Proceder al pago</a>
+            </div>
+        <?php endif; ?>
+    </div>
+</body>
+</html>

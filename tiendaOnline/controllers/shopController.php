@@ -8,6 +8,12 @@ if(isset($_GET['action']) && $_GET['action'] == 'newProduct'){
     exit;
 }
 
+//ver carrito
+if(isset($_GET['action']) && $_GET['action'] == 'viewCart'){
+    require_once 'views/cartView.phtml';
+    exit;
+}
+
 
 //vista de la tienda (default)
 require_once 'models/ProductoRepository.php';
@@ -35,5 +41,19 @@ if(isset($_POST['addProduct'])){
     }
     if(!ProductoRepository::createProduct($name, $description, $stock, $price, $imagen)){
         $message = "❌ No se ha podido crear el producto.";
+    } else {
+        // Redirigir a la tienda para ver el nuevo producto
+        header('Location: index.php?c=shop&add=success');
+        exit;
     }
 }
+
+//nuevo producto (solo admin)
+if(isset($_GET['action']) && $_GET['action'] == 'newProduct'){
+    require_once 'views/newProductView.phtml';
+    exit;
+}
+
+//vista de la tienda (default)
+$productos = ProductoRepository::getAllProducts();
+require_once 'views/shopView.phtml';

@@ -1,19 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+   
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Usuario</title>
+    <link rel="stylesheet" href="styles/form.css">
 </head>
 <body>
-    <h1> Registro </h1>
-    
-    <form action="index.php?c=register" method="POST" enctype="multipart/form-data">
+    <div class="container">
+        <h1>Registrarse</h1>
+
+        <form action="index.php?c=register" method="POST" enctype="multipart/form-data">
             <input type="text" name="username" placeholder="nombre de usuario" />
             <input type="password" name="password" placeholder="contraseña" />
             <input type="file" name="profilePicture" placeholder="avatar" />
             <input type="submit" name="register" value="Entrar" />
     </form>
 
+        <?php
+        // Asumiendo que el controlador de registro pasaría un mensaje
+        if (isset($message)) {
+            echo "<p style='color: red; margin-top: 1rem;'>" . htmlspecialchars($message) . "</p>";
+        }
+        ?>
+
+        <p style="margin-top: 1.5rem;">
+            ¿Ya tienes cuenta? <a href="index.php?c=register">Inicia sesión aquí</a>
+        </p>
+    </div>
 </body>
 </html>

@@ -4,29 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop front view</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/shop.css">
 </head>
 <body>
-    <h1> Tienda </h1>
-    
-    <form action="index.php?c=shop" method="POST">
-            <input type="text" name="search" placeholder="Buscar producto" />
-            <input type="submit" name="buscar" value="Buscar" />
-    </form>
+    <div class="main-container">
+        <h1> Tienda </h1>
+        
+        <div class="nav-links">
+            <a href="index.php?c=shop&action=newProduct">Agregar nuevo producto</a>
+            <a href="index.php?c=shop&action=viewCart">Ver carrito</a>
+            <a href='index.php?c=register&logout=1' class="btn-secondary">Cerrar sesión</a>
+        </div>
 
-    <a href="index.php?c=shop&action=newProduct">Agregar nuevo producto</a>
-    <a href="index.php?c=shop&action=viewCart">Ver carrito</a>
-    <br><a href='index.php?c=register&logout=1'>Cerrar sesión</a>
+        <form action="index.php?c=shop" method="POST">
+                <input type="text" name="search" placeholder="Buscar producto" />
+                <input type="submit" name="buscar" value="Buscar" class="btn" />
+        </form>
 
-    <?php
-        foreach ($productos as $producto) {
-            echo "<div>";
-            echo "<img src='" . htmlspecialchars($producto->getImagen()) . "' alt='" . htmlspecialchars($producto->getName()) . "' />";
-            echo "<h2>" . htmlspecialchars($producto->getName()) . "</h2>";
-            echo "<p>" . htmlspecialchars($producto->getDescription()) . "</p>";
-            echo "<p>Precio: $" . htmlspecialchars($producto->getPrice()) . "</p>";
-            echo "</div>";
-        }
-    ?>
-    
+        <div class="product-grid">
+            <?php foreach ($productos as $producto): ?>
+                <div class="product-card">
+                    <img src="img/productos/<?php echo htmlspecialchars($producto->getImagen()); ?>" alt="<?php echo htmlspecialchars($producto->getName()); ?>" />
+                    <h2><?php echo htmlspecialchars($producto->getName()); ?></h2>
+                    <p><?php echo htmlspecialchars($producto->getDescription()); ?></p>
+                    <p class="price"><?php echo htmlspecialchars(number_format($producto->getPrice(), 2)); ?> €</p>
+                    <a href="index.php?c=cart&action=add&id=<?php echo $producto->getIdProducto(); ?>" class="btn">Añadir al carrito</a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 </body>
 </html>

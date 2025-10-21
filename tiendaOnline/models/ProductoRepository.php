@@ -1,25 +1,51 @@
 <?php
 class ProductoRepository {
     // Crear un nuevo producto
-    public static function createProduct($name, $description, $stock, $price, $imagen) {
-        $db = Connection::connect();
-        // Determinar la disponibilidad basada en el stock
-        $disponibilidad = ($stock > 0) ? 1 : 0;
+    public static function registerProduct($name, $description, $stock, $price, $productPicture = null) {
+    $db = Connection::connect();
 
-        // Usar sentencias preparadas para mayor seguridad
-        $sql = "INSERT INTO productos (nombre, descripcion, stock, precio, imagen_url)
-        VALUES ('$name', '$description', $stock, $price, '$imagen')";
+    // Verificar que los datos mínimos estén presentes
+    if (!empty($name) && !empty($price)) {
 
-        // Verificar si la preparación de la consulta falló
-        if ($stmt === false) {
-            // Opcional: registrar el error $db->error
-            return false;
+        // Comprobar si ya existe un producto con el mismo nombre
+        $query = 'SELECT * FROM productos WHERE nombre="' . $name . '"';
+        $result = $db->query($query);
+
+        if ($result && $result->fetch_assoc()) {
+            $message = "❌ Ese producto ya existe.";
+        } else {
+            // Procesar la imagen si se subió una
+            $imagePath = null;
+            if (!empty($_FILES['productPicture']['name'])) {
+                $uploadDir = "uploads/";
+                $imagePath = $uploadDir . basename($_FILES['productPicture']['name']);
+                move_uploaded_file($_FILES["productPicture"]["tmp_name"], $imagePath);
+            } elseif ($productPicture !== null) {
+                $imagePath = $productPicture;
+            }
+
+            // Crear el nuevo registro en la base de datos
+            $insert = 'INSERT INTO productos (nombre, descripcion, stock, precio, imagen_url)
+                       VALUES ("' . $name . '", "' . $description . '", ' . (int)$stock . ', ' . (float)$price . ', "' . $imagePath . '")';
+
+            if ($db->query($insert)) {
+                $idProducto = $db->insert_id;
+                $message = "✅ Producto creado correctamente (ID: $idProducto).";
+
+                // Si quieres, aquí se puede cargar una vista o redirigir
+                // require_once 'views/productView.phtml';
+                // exit;
+            } else {
+                $message = "❌ Error al registrar el producto: " . $db->error;
+            }
         }
-
-        // "ssidsi" significa: string, string, integer, double, string, integer
-        $stmt->bind_param("ssidsi", $name, $description, $stock, $price, $imagen, $disponibilidad);
-        return $stmt->execute();
+    } else {
+        $message = "⚠️ Faltan campos obligatorios (nombre o precio).";
     }
+
+    echo $message;
+}
+
 
     //Eliminar un producto por su ID
     public static function deleteProduct($idProducto) {
