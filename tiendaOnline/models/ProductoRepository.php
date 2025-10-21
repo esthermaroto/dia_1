@@ -3,22 +3,8 @@ class ProductoRepository {
     // Crear un nuevo producto
     public static function createProduct($name, $description, $stock, $price, $imagen) {
         $db = Connection::connect();
-        // Determinar la disponibilidad basada en el stock
-        $disponibilidad = ($stock > 0) ? 1 : 0;
-
-        // Usar sentencias preparadas para mayor seguridad
-        $sql = "INSERT INTO productos (nombre, descripcion, stock, precio, imagen_url)
-        VALUES ('$name', '$description', $stock, $price, '$imagen')";
-
-        // Verificar si la preparación de la consulta falló
-        if ($stmt === false) {
-            // Opcional: registrar el error $db->error
-            return false;
-        }
-
-        // "ssidsi" significa: string, string, integer, double, string, integer
-        $stmt->bind_param("ssidsi", $name, $description, $stock, $price, $imagen, $disponibilidad);
-        return $stmt->execute();
+        $q = "INSERT INTO producto (name, description, stock, price, imagen) VALUES('" . $name . "','" . $description . "','" . $stock . "','" . $price . "','" . $imagen . "')";
+        $db->query($q);
     }
 
     //Eliminar un producto por su ID
