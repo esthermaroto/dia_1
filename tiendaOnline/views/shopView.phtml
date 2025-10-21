@@ -1,3 +1,8 @@
+<?php
+// Detectar si el usuario está logueado y si es admin
+$isLogged = isset($_SESSION['user']) && $_SESSION['user'] !== false;
+$isAdmin = $isLogged && $_SESSION['user']->getRol() == 0;
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -68,8 +73,11 @@
         <h1>Tienda</h1>
 
         <div class="nav-links">
-            <?php if(isset($_SESSION['user']) && $_SESSION['user'] !== false): ?>
+            <?php if($isAdmin): ?>
                 <a href="index.php?c=shop&action=newProduct" class="btn-secondary">Agregar nuevo producto</a>
+                <a href="index.php?c=cart&action=view" class="btn">Ver carrito</a>
+                <a href="index.php?c=register&logout=1" class="btn-danger">Cerrar sesión</a>
+            <?php elseif($isLogged): ?>
                 <a href="index.php?c=cart&action=view" class="btn">Ver carrito</a>
                 <a href="index.php?c=register&logout=1" class="btn-danger">Cerrar sesión</a>
             <?php else: ?>
@@ -101,12 +109,14 @@
                         <?php echo ($producto->getStock() > 0) ? '✅ Disponible' : '❌ Agotado'; ?>
                     </p>
 
-                    <?php if(isset($_SESSION['user']) && $_SESSION['user'] !== false): ?>
+                    <?php if($isAdmin): ?>
                         <a href="index.php?c=cart&action=add&id=<?php echo $producto->getIdProducto(); ?>" class="btn">Añadir al carrito</a>
                         <br>
                         <a href="index.php?c=shop&action=editProduct&id=<?php echo $producto->getIdProducto(); ?>" class="btn-secondary">Editar</a>
                         <a href="index.php?c=shop&action=deleteProduct&id=<?php echo $producto->getIdProducto(); ?>" class="btn-danger"
                            onclick="return confirm('¿Seguro que quieres eliminar este producto?');">Eliminar</a>
+                    <?php elseif($isLogged): ?>
+                        <a href="index.php?c=cart&action=add&id=<?php echo $producto->getIdProducto(); ?>" class="btn">Añadir al carrito</a>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
