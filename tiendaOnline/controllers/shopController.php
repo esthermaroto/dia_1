@@ -9,6 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Detectar si el usuario está logueado
 $isLogged = isset($_SESSION['user']) && $_SESSION['user'] !== false;
+$isAdmin = $isLogged && $_SESSION['user']->getRol() == 0; // Admin = 0
 
 // AGREGAR NUEVO PRODUCTO (solo si está logueado)
 if ($isLogged && isset($_POST['addProduct'])) {
@@ -45,10 +46,35 @@ if ($isLogged && isset($_POST['addProduct'])) {
     }
 }
 
+// ELIMINAR PRODUCTO (solo si admin)
+if ($isAdmin && isset($_GET['action']) && $_GET['action'] == 'deleteProduct' && isset($_GET['id'])) {
+    $idProducto = intval($_GET['id']);
+    if (ProductoRepository::deleteProduct($idProducto)) {
+        header('Location: index.php?c=shop&message=deleted');
+        exit;
+    } else {
+        echo "❌ No se pudo eliminar el producto.";
+        exit;
+    }
+}
+
 // FORMULARIO NUEVO PRODUCTO (solo si está logueado)
 if ($isLogged && isset($_GET['action']) && $_GET['action'] == 'newProduct') {
     require_once 'views/newProductView.phtml';
     exit;
+}
+
+// EDITAR PRODUCTO (solo si admin)
+if ($isAdmin && isset($_GET['action']) && $_GET['action'] == 'editProduct' && isset($_GET['id'])) {
+    $idProducto = intval($_GET['id']);
+    $producto = ProductoRepository::getProductById($idProducto);
+    if ($producto) {
+        require_once 'views/editProductView.phtml';
+        exit;
+    } else {
+        echo "❌ Producto no encontrado.";
+        exit;
+    }
 }
 
 // CARGAR TODOS LOS PRODUCTOS (siempre)
