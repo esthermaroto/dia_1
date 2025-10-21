@@ -2,6 +2,8 @@
 require_once 'models/PedidoRepository.php';
 require_once 'models/DPRepository.php';
 require_once 'models/ProductoRepository.php'; 
+require_once 'models/Producto.php';
+
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -10,6 +12,48 @@ if (session_status() == PHP_SESSION_NONE) {
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 switch ($action) {
+    case 'add':
+        if(isset($_GET['id'])){
+            $idProducto = intval($_GET['id']);
+
+            if(!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
+
+            if(isset($_SESSION['cart'][$idProducto])){
+                $_SESSION['cart'][$idProducto]++;
+            } else {
+                $_SESSION['cart'][$idProducto] = 1;
+            }
+
+            // Redirigir a la vista del carrito
+            header('Location: index.php?c=cart&action=view');
+            exit;
+        }
+        break;
+
+    case 'view':
+        $cartItems = [];
+        $cartTotal = 0;
+
+        if(isset($_SESSION['cart']) && !empty($_SESSION['cart'])){
+            foreach($_SESSION['cart'] as $productId => $quantity){
+                $product = ProductoRepository::getProductById($productId);
+                if($product){
+                    $total = $product->getPrice() * $quantity;
+                    $cartItems[] = [
+                        'id' => $product->getIdProducto(),
+                        'name' => $product->getName(),
+                        'quantity' => $quantity,
+                        'price' => $product->getPrice(),
+                        'total' => $total
+                    ];
+                    $cartTotal += $total;
+                }
+            }
+        }
+
+        require_once 'views/cartView.phtml';
+        exit;
+    
     case 'checkout':
         // 1. Comprobar que el usuario está logueado y el carrito no está vacío.
         if (!isset($_SESSION['user']) || empty($_SESSION['cart'])) {
