@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New product view</title>
+    <link rel="stylesheet" href="styles/form.css">
+</head>
+<body>
+    <div class="container">
+        <h1> Nuevo producto </h1>
+
+        <form action="index.php?c=shop" method="POST" enctype="multipart/form-data">
+                <input type="text" name="name" placeholder="Nombre del producto" required />
+                <input type="text" name="description" placeholder="Descripción del producto" />
+                <input type="number" name="stock" placeholder="Stock" required />
+                <input type="number" step="0.01" name="price" placeholder="Precio" required />
+                <input type="file" name="productPicture" />
+                <input type="submit" name="addProduct" value="Agregar producto" />
+                <a href="index.php?c=shop">Volver a la tienda</a>
+        </form>
+
+        <?php
+            if(isset($message)){
+                echo "<p style='color: red; margin-top: 1rem;'>" . htmlspecialchars($message) . "</p>";
+            }
+        ?>
+    </div>
+</body>
+</html>
