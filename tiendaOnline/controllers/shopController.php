@@ -1,6 +1,8 @@
 <?php
 $db = Connection::connect();
 require_once 'models/Producto.php';
+require_once 'models/ProductoRepository.php';
+require_once 'helpers/FileHelper.php';
 
 //nuevo producto (solo admin)
 if(isset($_GET['action']) && $_GET['action'] == 'newProduct'){
@@ -8,6 +10,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'newProduct'){
     exit;
 }
 
+<<<<<<< HEAD
 //ver carrito
 if(isset($_GET['action']) && $_GET['action'] == 'viewCart'){
     require_once 'views/cartView.phtml';
@@ -20,6 +23,8 @@ require_once 'models/ProductoRepository.php';
 require_once 'views/shopView.phtml';
 exit;
 
+=======
+>>>>>>> 6e29906b5040cc1ea421ef9e543bd906c45805a8
 //agregar nuevo producto
 if(isset($_POST['addProduct'])){
     $name = $_POST['name'];
@@ -42,10 +47,17 @@ if(isset($_POST['addProduct'])){
     if(!ProductoRepository::createProduct($name, $description, $stock, $price, $imagen)){
         $message = "❌ No se ha podido crear el producto.";
     } else {
+<<<<<<< HEAD
         // Redirigir a la tienda para ver el nuevo producto
         header('Location: index.php?c=shop&add=success');
         exit;
+=======
+        $message = "✅ Producto creado correctamente.";
+>>>>>>> 6e29906b5040cc1ea421ef9e543bd906c45805a8
     }
+
+    $productos = ProductoRepository::getAllProducts();
+    require_once 'views/shopView.phtml';
 }
 
 //nuevo producto (solo admin)

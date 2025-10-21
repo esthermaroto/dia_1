@@ -1,6 +1,7 @@
 <?php
 class ProductoRepository {
     // Crear un nuevo producto
+<<<<<<< HEAD
     public static function registerProduct($name, $description, $stock, $price, $productPicture = null) {
     $db = Connection::connect();
 
@@ -41,7 +42,22 @@ class ProductoRepository {
         }
     } else {
         $message = "⚠️ Faltan campos obligatorios (nombre o precio).";
+=======
+    public static function createProduct($name, $description, $stock, $price, $imagen) {
+    $db = Connection::connect();
+    $sql = "INSERT INTO producto (name, description, stock, price, imagen) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $db->prepare($sql);
+    if (!$stmt) die("Error: " . $db->error);
+    $stmt->bind_param("ssids", $name, $description, $stock, $price, $imagen);
+    if ($stmt->execute()) {
+        $stmt->close();
+        return true;
+>>>>>>> 6e29906b5040cc1ea421ef9e543bd906c45805a8
     }
+    return false;
+}
+
+
 
     echo $message;
 }
