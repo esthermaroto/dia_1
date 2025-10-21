@@ -2,10 +2,19 @@
 class ProductoRepository {
     // Crear un nuevo producto
     public static function createProduct($name, $description, $stock, $price, $imagen) {
-        $db = Connection::connect();
-        $q = "INSERT INTO producto (name, description, stock, price, imagen) VALUES('" . $name . "','" . $description . "','" . $stock . "','" . $price . "','" . $imagen . "')";
-        $db->query($q);
+    $db = Connection::connect();
+    $sql = "INSERT INTO producto (name, description, stock, price, imagen) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $db->prepare($sql);
+    if (!$stmt) die("Error: " . $db->error);
+    $stmt->bind_param("ssids", $name, $description, $stock, $price, $imagen);
+    if ($stmt->execute()) {
+        $stmt->close();
+        return true;
     }
+    return false;
+}
+
+
 
     //Eliminar un producto por su ID
     public static function deleteProduct($idProducto) {

@@ -1,18 +1,14 @@
 <?php
 $db = Connection::connect();
 require_once 'models/Producto.php';
+require_once 'models/ProductoRepository.php';
+require_once 'helpers/FileHelper.php';
 
 //nuevo producto (solo admin)
 if(isset($_GET['action']) && $_GET['action'] == 'newProduct'){
     require_once 'views/newProductView.phtml';
     exit;
 }
-
-
-//vista de la tienda (default)
-require_once 'models/ProductoRepository.php';
-require_once 'views/shopView.phtml';
-exit;
 
 //agregar nuevo producto
 if(isset($_POST['addProduct'])){
@@ -35,5 +31,10 @@ if(isset($_POST['addProduct'])){
     }
     if(!ProductoRepository::createProduct($name, $description, $stock, $price, $imagen)){
         $message = "❌ No se ha podido crear el producto.";
+    } else {
+        $message = "✅ Producto creado correctamente.";
     }
+
+    $productos = ProductoRepository::getAllProducts();
+    require_once 'views/shopView.phtml';
 }
