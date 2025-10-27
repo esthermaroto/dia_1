@@ -88,6 +88,8 @@ $isAdmin = $isLogged && $_SESSION['user']->getRol() == 0;
         <?php if(isset($_GET['message'])): ?>
             <?php if($_GET['message'] == 'created'): ?>
                 <p style="color: green;">✅ Producto creado correctamente.</p>
+            <?php elseif($_GET['message'] == 'updated'): ?>
+            <p style="color: green;">✅ Producto actualizado correctamente.</p>
             <?php elseif($_GET['message'] == 'deleted'): ?>
                 <p style="color: red;">✅ Producto eliminado correctamente.</p>
             <?php endif; ?>

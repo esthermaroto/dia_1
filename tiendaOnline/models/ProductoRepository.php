@@ -64,17 +64,25 @@ class ProductoRepository {
     }
 
     // Actualizar producto
-    public static function updateProduct($idProducto, $name, $description, $stock, $price, $imagen) {
-        $db = Connection::connect();
-        $id = intval($idProducto);
-        $stock = intval($stock);
-        $price = floatval($price);
+    public static function updateProduct($idProducto, $name, $description, $stock, $price, $imagen = null) {
+    $db = Connection::connect();
+    $id = intval($idProducto);
+    $stock = intval($stock);
+    $price = floatval($price);
 
+    // Si no se ha enviado nueva imagen, no actualizar la columna 'imagen'
+    if ($imagen === null) {
+        $sql = "UPDATE producto 
+                SET name='$name', description='$description', stock=$stock, price=$price 
+                WHERE idProducto=$id";
+    } else {
         $sql = "UPDATE producto 
                 SET name='$name', description='$description', stock=$stock, price=$price, imagen='$imagen' 
                 WHERE idProducto=$id";
-        return $db->query($sql);
     }
+
+    return $db->query($sql);
+}
 
     // Reducir stock de un producto
     public static function reduceStock($idProducto, $cantidad) {

@@ -6,13 +6,14 @@ require_once 'helpers/FileHelper.php';
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-// Detectar si el usuario está logueado
 $isLogged = isset($_SESSION['user']) && $_SESSION['user'] !== false;
-$isAdmin = $isLogged && $_SESSION['user']->getRol() == 0; // Admin = 0
+$isAdmin = $isLogged && intval($_SESSION['user']->getRol()) === 0;
 
-// AGREGAR NUEVO PRODUCTO (solo si está logueado)
-if ($isLogged && isset($_POST['addProduct'])) {
+
+// =========================
+// AGREGAR NUEVO PRODUCTO (POST) - SOLO ADMIN
+// =========================
+if ($isAdmin && isset($_POST['addProduct'])) {
     $name = $_POST['name'];
     $description = $_POST['description'];
     $stock = $_POST['stock'];
@@ -46,7 +47,44 @@ if ($isLogged && isset($_POST['addProduct'])) {
     }
 }
 
-// ELIMINAR PRODUCTO (solo si admin)
+// =========================
+// ACTUALIZAR PRODUCTO (POST) - SOLO ADMIN
+// =========================
+if ($isAdmin && isset($_POST['updateProduct'])) {
+    $idProducto = intval($_POST['idProducto']);
+    $name = $_POST['name'];
+    $description = $_POST['description'];
+    $stock = intval($_POST['stock']);
+    $price = floatval($_POST['price']);
+
+    // Mantener imagen actual si no se sube nueva
+    $productoActual = ProductoRepository::getProductById($idProducto);
+    $imagen = $productoActual ? $productoActual->getImagen() : null;
+
+    if (isset($_FILES['productPicture']) && $_FILES['productPicture']['error'] === UPLOAD_ERR_OK) {
+        $originalName = $_FILES['productPicture']['name'];
+        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+        $uniqueFilename = uniqid('product_', true) . '.' . $extension;
+
+        if (FileHelper::fileHandler($_FILES['productPicture']['tmp_name'], 'img/productos/' . $uniqueFilename)) {
+            $imagen = $uniqueFilename;
+        }
+    }
+
+    if (ProductoRepository::updateProduct($idProducto, $name, $description, $stock, $price, $imagen)) {
+        header('Location: index.php?c=shop&message=updated');
+        exit;
+    } else {
+        $message = "❌ No se pudo actualizar el producto.";
+        require_once 'views/editProductView.phtml';
+        exit;
+    }
+}
+
+
+// =========================
+// ELIMINAR PRODUCTO (GET) - SOLO ADMIN
+// =========================
 if ($isAdmin && isset($_GET['action']) && $_GET['action'] == 'deleteProduct' && isset($_GET['id'])) {
     $idProducto = intval($_GET['id']);
     if (ProductoRepository::deleteProduct($idProducto)) {
@@ -58,27 +96,34 @@ if ($isAdmin && isset($_GET['action']) && $_GET['action'] == 'deleteProduct' && 
     }
 }
 
-// FORMULARIO NUEVO PRODUCTO (solo si está logueado)
-if ($isLogged && isset($_GET['action']) && $_GET['action'] == 'newProduct') {
-    require_once 'views/newProductView.phtml';
-    exit;
-}
-
-// EDITAR PRODUCTO (solo si admin)
-if ($isAdmin && isset($_GET['action']) && $_GET['action'] == 'editProduct' && isset($_GET['id'])) {
+// =========================
+// EDITAR PRODUCTO (GET) - SOLO ADMIN
+// =========================
+if ($isAdmin && isset($_GET['action']) && $_GET['action'] === 'editProduct' && isset($_GET['id'])) {
     $idProducto = intval($_GET['id']);
     $producto = ProductoRepository::getProductById($idProducto);
+
     if ($producto) {
+        // Cargamos la vista de edición exactamente como en "newProduct"
         require_once 'views/editProductView.phtml';
-        exit;
+        exit; // importante: evita que se cargue shopView
     } else {
         echo "❌ Producto no encontrado.";
         exit;
     }
 }
 
-// CARGAR TODOS LOS PRODUCTOS (siempre)
-$productos = ProductoRepository::getAllProducts();
 
-// Cargar vista de la tienda
+// =========================
+// NUEVO PRODUCTO (GET) - SOLO ADMIN
+// =========================
+if ($isAdmin && isset($_GET['action']) && $_GET['action'] == 'newProduct') {
+    require_once 'views/newProductView.phtml';
+    exit;
+}
+
+// =========================
+// CARGAR TODOS LOS PRODUCTOS (SIEMPRE)
+// =========================
+$productos = ProductoRepository::getAllProducts();
 require_once 'views/shopView.phtml';
